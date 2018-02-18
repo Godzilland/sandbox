@@ -26,13 +26,13 @@ class Island:
         """ sosedje - vrne listo tuplejev v radiju
          r rabi navigator, ki lahko premakne nekoga za 2"""
         lista = []
-        if (x, y - 1) in island.cards.keys():
+        if self.cards[(x, y - 1)]:
             lista.append((x, y - 1))
-        if (x - 1, y) in island.cards.keys():
+        if self.cards[(x - 1, y)]:
             lista.append((x - 1, y))
-        if (x + 1, y) in island.cards.keys():
+        if self.cards[(x + 1, y)]:
             lista.append((x + 1, y))
-        if (x, y + 1) in island.cards.keys():
+        if self.cards[(x, y + 1)]:
             lista.append((x, y + 1))
         return lista
 
@@ -40,14 +40,39 @@ class Island:
         """ potopi karto za 1. Predvideva, da karta se ni cisto pod vodo (!= 0)"""
         self.cards[(x, y)].status = self.cards[(x, y)].status - 1
         if self.cards[(x, y)].status == 0:
-            del self.cards[(x, y)]
+            # del self.cards[(x, y)]
+            self.cards[(x, y)] = None
 
     def dvigni(self, x, y):
         """ dvigne karto na 2. Predvideva, da je status karte 1"""
         self.cards[(x, y)].status = 2
 
+    def __narisi_karto__(self, x, y):
+        if self.cards[(x, y)]:
+            print("{}    ".format(self.cards[(x, y)]), end="")
+        else:
+            print("      ", end="")
+
+
     def izrisi(self):
-        print("    {}  {}".format(self.cards[(1, 0)], self.cards[(2, 0)]))
+        print("      ", end="")
+        self.__narisi_karto__(1, 0)
+        self.__narisi_karto__(2, 0)
+        print("")
+        self.__narisi_karto__(0, 1)
+        self.__narisi_karto__(1, 1)
+        self.__narisi_karto__(2, 1)
+        self.__narisi_karto__(3, 1)
+        print("")
+        self.__narisi_karto__(0, 2)
+        self.__narisi_karto__(1, 2)
+        self.__narisi_karto__(2, 2)
+        self.__narisi_karto__(3, 2)
+        print("")
+        print("      ", end="")
+        self.__narisi_karto__(1, 3)
+        self.__narisi_karto__(2, 3)
+        print("")
 
 
 class decek:
@@ -94,10 +119,7 @@ island.add_land_card(2, 3, 8)
 # for x, y in island.cards.keys():
 #     print(island.cards[(x, y)])
 
-if (1, 0) in island.cards.keys():
-    print("veljavna koordinata")
-else:
-    print ("neveljavna koordinata")
+island.izrisi()
 
 print("Sosedje (1, 1)")
 print(island.sosedje(1, 1))
@@ -109,10 +131,9 @@ print(island.sosedje(1, 1))
 print("Potopi (2, 1)")
 island.potopi(2, 1)
 print(island.sosedje(1, 1))
-
+island.izrisi()
 engineer = decek(2, 2, 'red', 1)
-print("sosedje inzenirja na 2, 2: {}".format(island.sosedje(2, 2)))
 engineer.potopi(1, 2)
-print("sosedje inzenirja na 2, 2: {}".format(island.sosedje(2, 2)))
 engineer.potopi(1, 2)
-print("sosedje inzenirja na 2, 2: {}".format(island.sosedje(2, 2)))
+
+island.izrisi()
