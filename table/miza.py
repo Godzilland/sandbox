@@ -26,13 +26,13 @@ class Island:
         """ sosedje - vrne listo tuplejev v radiju
          r rabi navigator, ki lahko premakne nekoga za 2"""
         lista = []
-        if self.cards[(x, y - 1)]:
+        if (x, y - 1) in self.cards.keys() and self.cards[(x, y - 1)]:
             lista.append((x, y - 1))
-        if self.cards[(x - 1, y)]:
+        if (x - 1, y) in self.cards.keys() and self.cards[(x - 1, y)]:
             lista.append((x - 1, y))
-        if self.cards[(x + 1, y)]:
+        if (x + 1, y) in self.cards.keys() and self.cards[(x + 1, y)]:
             lista.append((x + 1, y))
-        if self.cards[(x, y + 1)]:
+        if (x, y + 1) in self.cards.keys() and self.cards[(x, y + 1)]:
             lista.append((x, y + 1))
         return lista
 
@@ -76,64 +76,81 @@ class Island:
 
 
 class decek:
-    def __init__(self, x, y, color, id):
+    def __init__(self, x, y, color, id, name="Engineer", updiag=False):
         self.actions = 3
-        self.cards = []
+        self.hand = []
         self.x = x
         self.y = y
+        self.name = name
+        self.dvignidiag = updiag
         self.color = color
         self.id = id
 
-    def potopi(self, x, y):
-        if (x, y) in island.sosedje(self.x, self.y):
-            island.potopi(x, y)
-            self.actions = self.actions - 1
-            print("potopil {}".format((x, y)))
+    def get_xy(self):
+        print ('({}, {})'.format(self.x, self.y))
+
+
+    def __action_complete(self):
+        self.actions = self.actions - 1
+        print("{} actions left".format(self.actions))
+
+    # def potopi(self, x, y):
+    #     if (x, y) in island.sosedje(self.x, self.y):
+    #         island.potopi(x, y)
+    #         self.actions = self.actions - 1
+    #         print("potopil {}".format((x, y)))
+    #         self.__action_complete()
 
     def dvigni(self, x, y):
         if (x, y) in island.sosedje(self.x, self.y):
             island.dvigni(x, y)
-            self.actions = self.actions - 1
             print("dvignil {}".format((x, y)))
+            self.__action_complete()
 
+    def move(self, x, y):
+        if (x, y) in island.sosedje(self.x, self.y):
+            self.x = x
+            self.y = y
+            self.__action_complete()
 
-island = Island()
+if __name__ == '__main__':
+    island = Island()
 
-island.add_land_card(1, 0, 1)
-island.add_land_card(2, 0, 5)
-island.add_land_card(0, 1, 9)
-island.add_land_card(1, 1, 2)
-island.add_land_card(2, 1, 12)
-island.add_land_card(3, 1, 10)
-island.add_land_card(0, 2, 4)
-island.add_land_card(1, 2, 3)
-island.add_land_card(2, 2, 7)
-island.add_land_card(3, 2, 6)
-island.add_land_card(1, 3, 11)
-island.add_land_card(2, 3, 8)
+    island.add_land_card(1, 0, 1)
+    island.add_land_card(2, 0, 5)
+    island.add_land_card(0, 1, 9)
+    island.add_land_card(1, 1, 2)
+    island.add_land_card(2, 1, 12)
+    island.add_land_card(3, 1, 10)
+    island.add_land_card(0, 2, 4)
+    island.add_land_card(1, 2, 3)
+    island.add_land_card(2, 2, 7)
+    island.add_land_card(3, 2, 6)
+    island.add_land_card(1, 3, 11)
+    island.add_land_card(2, 3, 8)
 
-# print(island.cards, flush=True)
+    # print(island.cards, flush=True)
 
-# print(island.cards[(2, 0)], flush=True)
+    # print(island.cards[(2, 0)], flush=True)
 
-# for x, y in island.cards.keys():
-#     print(island.cards[(x, y)])
+    # for x, y in island.cards.keys():
+    #     print(island.cards[(x, y)])
 
-island.izrisi()
+    island.izrisi()
 
-print("Sosedje (1, 1)")
-print(island.sosedje(1, 1))
+    print("Sosedje (1, 1)")
+    print(island.sosedje(1, 1))
 
-print("Potopi (2, 1)")
-island.potopi(2, 1)
-print(island.sosedje(1, 1))
+    print("Potopi (2, 1)")
+    island.potopi(2, 1)
+    print(island.sosedje(1, 1))
 
-print("Potopi (2, 1)")
-island.potopi(2, 1)
-print(island.sosedje(1, 1))
-island.izrisi()
-engineer = decek(2, 2, 'red', 1)
-engineer.potopi(1, 2)
-engineer.potopi(1, 2)
+    print("Potopi (2, 1)")
+    island.potopi(2, 1)
+    print(island.sosedje(1, 1))
+    island.izrisi()
+    eng = decek(2, 2, 'red', 1)
+    island.potopi(1, 2)
+    island.potopi(1, 2)
 
-island.izrisi()
+    island.izrisi()
