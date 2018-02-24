@@ -1,3 +1,5 @@
+import random
+
 class LandCard:
 
     def __init__(self, id):
@@ -16,6 +18,18 @@ class Island:
 
     def __init__(self):
         self.cards = {}
+        self.add_land_card(1, 0, 1)
+        self.add_land_card(2, 0, 5)
+        self.add_land_card(0, 1, 9)
+        self.add_land_card(1, 1, 2)
+        self.add_land_card(2, 1, 12)
+        self.add_land_card(3, 1, 10)
+        self.add_land_card(0, 2, 4)
+        self.add_land_card(1, 2, 3)
+        self.add_land_card(2, 2, 7)
+        self.add_land_card(3, 2, 6)
+        self.add_land_card(1, 3, 11)
+        self.add_land_card(2, 3, 8)
 
     def add_land_card(self, x, y, id):
         """ add_land_card - uporablja se samo pri kreiranju mize -
@@ -49,9 +63,10 @@ class Island:
 
     def __narisi_karto__(self, x, y):
         if self.cards[(x, y)]:
-            print("{}    ".format(self.cards[(x, y)]), end="")
+            print("{:6}".format(self.cards[(x, y)].name), end="")
         else:
-            print("      ", end="")
+            # print("           ", end="")
+            print("{:6}".format(""), end="")
 
 
     def izrisi(self):
@@ -116,18 +131,6 @@ class decek:
 if __name__ == '__main__':
     island = Island()
 
-    island.add_land_card(1, 0, 1)
-    island.add_land_card(2, 0, 5)
-    island.add_land_card(0, 1, 9)
-    island.add_land_card(1, 1, 2)
-    island.add_land_card(2, 1, 12)
-    island.add_land_card(3, 1, 10)
-    island.add_land_card(0, 2, 4)
-    island.add_land_card(1, 2, 3)
-    island.add_land_card(2, 2, 7)
-    island.add_land_card(3, 2, 6)
-    island.add_land_card(1, 3, 11)
-    island.add_land_card(2, 3, 8)
 
     # print(island.cards, flush=True)
 
@@ -150,7 +153,17 @@ if __name__ == '__main__':
     print(island.sosedje(1, 1))
     island.izrisi()
     eng = decek(2, 2, 'red', 1)
+    print("Potopi 1, 2")
     island.potopi(1, 2)
     island.potopi(1, 2)
 
     island.izrisi()
+    # v python 3 so keyi iteratable. v 2 so bili lista
+    #  https://stackoverflow.com/questions/4512557/python-if-key-in-dict-vs-try-except
+    for i in range(1, 10):
+        mm = random.choice(list(island.cards.keys()))
+        if island.cards[mm]:
+            print("ni potopljen: {}".format(mm))
+        else:
+            print("potopljen: {}".format(mm))
+
