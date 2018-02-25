@@ -1,4 +1,25 @@
 import random
+from random import shuffle
+
+
+class FloodCards:
+    def __init__(self):
+        self.flood_cards = [i for i in range(1, 13)]
+        shuffle(self.flood_cards)
+        self.index = 0
+
+    def next(self):
+        if self.index == len(self.flood_cards):
+            self.revert()
+        self.index = self.index + 1
+        return self.flood_cards[self.index - 1]
+
+    def revert(self):
+        self.index = 0
+
+    def remove(self, id):
+        del self.flood_cards[id]
+
 
 class LandCard:
 
@@ -9,7 +30,7 @@ class LandCard:
         self.jpg = 'zemlja' + str(id) + '.jpg'
 
     def __repr__(self):
-        return self.name
+        return self.id
 
     def getLC(self, id):
         pass
@@ -50,8 +71,22 @@ class Island:
             lista.append((x, y + 1))
         return lista
 
-    def potopi(self, x, y):
+    def _getXY(self, id):
+        for card in self.cards.keys():
+            # print(card)
+            if self.cards[card].id == id:
+                print("Nasel karto z id {}".format(id))
+                return(card)
+
+
+
+    def potopi(self, x, y = None):
         """ potopi karto za 1. Predvideva, da karta se ni cisto pod vodo (!= 0)"""
+        """Ce je dan samo x je to id"""
+        if not y:
+            x, y = self._getXY(x)
+            print("Koordinate: ({}, {})".format(x, y))
+
         self.cards[(x, y)].status = self.cards[(x, y)].status - 1
         if self.cards[(x, y)].status == 0:
             # del self.cards[(x, y)]
@@ -70,21 +105,17 @@ class Island:
 
 
     def izrisi(self):
-        print("      ", end="")
+        print("{:6}".format(""), end="")
         self.__narisi_karto__(1, 0)
         self.__narisi_karto__(2, 0)
         print("")
-        self.__narisi_karto__(0, 1)
-        self.__narisi_karto__(1, 1)
-        self.__narisi_karto__(2, 1)
-        self.__narisi_karto__(3, 1)
-        print("")
-        self.__narisi_karto__(0, 2)
-        self.__narisi_karto__(1, 2)
-        self.__narisi_karto__(2, 2)
-        self.__narisi_karto__(3, 2)
-        print("")
-        print("      ", end="")
+
+        for i in range(1, 3):
+            for j in range(0, 4):
+                self.__narisi_karto__(j, i)
+            print("")
+
+        print("{:6}".format(""), end="")
         self.__narisi_karto__(1, 3)
         self.__narisi_karto__(2, 3)
         print("")
@@ -128,42 +159,43 @@ class decek:
             self.y = y
             self.__action_complete()
 
+
 if __name__ == '__main__':
     island = Island()
-
-
-    # print(island.cards, flush=True)
-
-    # print(island.cards[(2, 0)], flush=True)
-
-    # for x, y in island.cards.keys():
-    #     print(island.cards[(x, y)])
+    fc = FloodCards()
+    engineer = decek(2, 2, 'red', 1)
 
     island.izrisi()
+    island.potopi(12)
+    # for card in island.cards.values():
+    #     print(card.id)
 
-    print("Sosedje (1, 1)")
-    print(island.sosedje(1, 1))
 
-    print("Potopi (2, 1)")
-    island.potopi(2, 1)
-    print(island.sosedje(1, 1))
+    # island.potopi(2)
 
-    print("Potopi (2, 1)")
-    island.potopi(2, 1)
-    print(island.sosedje(1, 1))
-    island.izrisi()
-    eng = decek(2, 2, 'red', 1)
-    print("Potopi 1, 2")
-    island.potopi(1, 2)
-    island.potopi(1, 2)
+    # print("Sosedje (1, 1)")
+    # print(island.sosedje(1, 1))
+    #
+    # print("Potopi (2, 1)")
+    # island.potopi(2, 1)
+    # print(island.sosedje(1, 1))
+    #
+    # print("Potopi (2, 1)")
+    # island.potopi(2, 1)
+    # print(island.sosedje(1, 1))
+    # island.izrisi()
+    # eng = decek(2, 2, 'red', 1)
+    # print("Potopi 1, 2")
+    # island.potopi(1, 2)
+    # island.potopi(1, 2)
 
-    island.izrisi()
+    # island.izrisi()
     # v python 3 so keyi iteratable. v 2 so bili lista
     #  https://stackoverflow.com/questions/4512557/python-if-key-in-dict-vs-try-except
-    for i in range(1, 10):
-        mm = random.choice(list(island.cards.keys()))
-        if island.cards[mm]:
-            print("ni potopljen: {}".format(mm))
-        else:
-            print("potopljen: {}".format(mm))
+    # for i in range(1, 10):
+    #     mm = random.choice(list(island.cards.keys()))
+    #     if island.cards[mm]:
+    #         print("ni potopljen: {}".format(mm))
+    #     else:
+    #         print("potopljen: {}".format(mm))
 
