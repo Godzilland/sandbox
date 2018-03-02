@@ -1,11 +1,19 @@
 import random
 from random import shuffle
 
+class Card:
+    # def __init__(self):
+    #     pass
 
-class FloodCards:
+    def slice_shuffle(self, lst, imin, imax):
+        lst[imin:imax] = sorted(lst[imin:imax], key=lambda x: random.random())
+        return lst
+
+class FloodCards(Card):
     def __init__(self):
         self.flood_cards = [i for i in range(1, 13)]
-        shuffle(self.flood_cards)
+        self.flood_cards = self.slice_shuffle(self.flood_cards, 0, len(self.flood_cards))
+        # shuffle(self.flood_cards)
         self.index = 0
 
     def next(self):
@@ -15,13 +23,14 @@ class FloodCards:
         return self.flood_cards[self.index - 1]
 
     def revert(self):
+        self.flood_cards = self.slice_shuffle(self.flood_cards, 0, self.index)
         self.index = 0
 
     def remove(self, id):
         del self.flood_cards[id]
 
 
-class LandCard:
+class LandCard(Card):
 
     def __init__(self, id):
         self.status = 2
@@ -70,6 +79,18 @@ class Island:
         if (x, y + 1) in self.cards.keys() and self.cards[(x, y + 1)]:
             lista.append((x, y + 1))
         return lista
+        # directions = [(-1, -1), (0, -1), ...]
+        #
+        # def check_neighbors(m, x, y):
+        #     for direction in directions:
+        #         dx, dy = direction
+        #         # You should check here that (x+dx, y+dx)
+        #         # is still inside the matrix
+        #         if ...:
+        #             continue
+        #         if matrix[x + dx][y + dy] == 0:
+        #             return False
+        #     return True
 
     def _getXY(self, id):
         for card in self.cards.keys():
