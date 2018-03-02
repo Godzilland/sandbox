@@ -161,13 +161,6 @@ class decek:
         self.actions = self.actions - 1
         print("{} actions left".format(self.actions))
 
-    # def potopi(self, x, y):
-    #     if (x, y) in island.sosedje(self.x, self.y):
-    #         island.potopi(x, y)
-    #         self.actions = self.actions - 1
-    #         print("potopil {}".format((x, y)))
-    #         self.__action_complete()
-
     def dvigni(self, x, y):
         if (x, y) in island.sosedje(self.x, self.y):
             island.dvigni(x, y)
