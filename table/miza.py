@@ -66,31 +66,19 @@ class Island:
         postavlja otok"""
         self.cards[(x, y)] = LandCard(id)
 
-    def sosedje(self, x, y, r=1, explorer=False):
+    def sosedje(self, x, y, r=1, explorer=False, additional_neighbours = None):
         """ sosedje - vrne listo tuplejev v radiju
          r rabi navigator, ki lahko premakne nekoga za 2"""
+        neighbours = [(0, -1), (-1, 0), (1, 0), (0, 1)]
+        if additional_neighbours:
+            neighbours = neighbours + additional_neighbours
+
         lista = []
-        if (x, y - 1) in self.cards.keys() and self.cards[(x, y - 1)]:
-            lista.append((x, y - 1))
-        if (x - 1, y) in self.cards.keys() and self.cards[(x - 1, y)]:
-            lista.append((x - 1, y))
-        if (x + 1, y) in self.cards.keys() and self.cards[(x + 1, y)]:
-            lista.append((x + 1, y))
-        if (x, y + 1) in self.cards.keys() and self.cards[(x, y + 1)]:
-            lista.append((x, y + 1))
+        for dx, dy in neighbours:
+            # dx, dy = neighbour
+            if (x + dx, y + dy) in self.cards.keys() and self.cards[(x + dx, y + dy)]:
+                lista.append((x + dx, y + dy))
         return lista
-        # directions = [(-1, -1), (0, -1), ...]
-        #
-        # def check_neighbors(m, x, y):
-        #     for direction in directions:
-        #         dx, dy = direction
-        #         # You should check here that (x+dx, y+dx)
-        #         # is still inside the matrix
-        #         if ...:
-        #             continue
-        #         if matrix[x + dx][y + dy] == 0:
-        #             return False
-        #     return True
 
     def _getXY(self, id):
         for card in self.cards.keys():
@@ -99,7 +87,33 @@ class Island:
                 print("Nasel karto z id {}".format(id))
                 return(card)
 
+    def sosedjeR(self, x, y, r=1, explorer=False, additional_neighbours = None):
+        """ sosedje - vrne listo tuplejev v radiju
+         r rabi navigator, ki lahko premakne nekoga za 2"""
+        neighbours = [(0, -1), (-1, 0), (1, 0), (0, 1)]
+        if additional_neighbours:
+            neighbours = neighbours + additional_neighbours
 
+        lista = []
+        for dx, dy in neighbours:
+            # dx, dy = neighbour
+            if (x + dx, y + dy) in self.cards.keys() and self.cards[(x + dx, y + dy)]:
+                lista.append((x + dx, y + dy))
+        tmp_lista = list(lista)
+        if r == 2:
+            for land in lista:
+                x, y = land
+                # tmp_lista.append(self.sosedjeR(x, y))
+                tmp_lista = tmp_lista + self.sosedjeR(x, y)
+        return tmp_lista
+
+
+    def _getXY(self, id):
+        for card in self.cards.keys():
+            # print(card)
+            if self.cards[card].id == id:
+                print("Nasel karto z id {}".format(id))
+                return(card)
 
     def potopi(self, x, y = None):
         """ potopi karto za 1. Predvideva, da karta se ni cisto pod vodo (!= 0)"""
@@ -181,6 +195,16 @@ if __name__ == '__main__':
 
     island.izrisi()
     island.potopi(12)
+
+    print("Sosedje (1, 1)")
+    print(island.sosedje(1, 1))
+
+    print("Sosedje za explorerja (1, 1)")
+    print(island.sosedje(1, 1, additional_neighbours= [(-1, 1), (0, 2), (1, 1), (-2, 0), (2, 0), (-1, -1), (1, -1), (0, -2)]))
+
+    print("Sosedje za explorerja (1, 1) z radij 2")
+    print(island.sosedjeR(1, 1, r = 2))
+
     # for card in island.cards.values():
     #     print(card.id)
 
