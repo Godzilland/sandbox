@@ -26,6 +26,14 @@ island = {(1, 0): 1,
           (1, 1): 3
           }
 
-x, y = 2, 0
-print(island.get((x, y)))
+# x, y = 2, 0
+# print(island.get((x, y)))
 
+import random
+
+def partial_shuffle(lst, imin, imax):
+    lst[imin:imax] = sorted(lst[imin:imax], key=lambda x: random.random())
+    return lst
+
+lst = [1, 4, 2, 6, 12, 3, 7, 9, 23, 14]
+print (partial_shuffle(lst, 3, 8))
