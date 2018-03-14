@@ -48,46 +48,28 @@ class Island:
 
     def __init__(self):
         self.cards = {}
-        self.add_land_card(1, 0, 1)
-        self.add_land_card(2, 0, 5)
-        self.add_land_card(0, 1, 9)
-        self.add_land_card(1, 1, 2)
-        self.add_land_card(2, 1, 12)
-        self.add_land_card(3, 1, 10)
-        self.add_land_card(0, 2, 4)
-        self.add_land_card(1, 2, 3)
-        self.add_land_card(2, 2, 7)
-        self.add_land_card(3, 2, 6)
-        self.add_land_card(1, 3, 11)
-        self.add_land_card(2, 3, 8)
+        land_cards = list(range(1, 25))
+        i = 1
+        for x in range(1, 5):
+            for y in range(1, 5):
+                land_card = random.choice(land_cards)
+                self.add_land_card(x, y, land_card)
+                land_cards.remove(land_card)
+        # se robne ploscice
+        border_coordinates = [(2, 0), (3, 0), (0, 2), (0, 3), (5, 2), (5, 3), (2, 5), (3, 5)]
+        for x, y in border_coordinates:
+            land_card = random.choice(land_cards)
+            self.add_land_card(x, y, land_card)
+            land_cards.remove(land_card)
+
 
     def add_land_card(self, x, y, id):
         """ add_land_card - uporablja se samo pri kreiranju mize -
         postavlja otok"""
         self.cards[(x, y)] = LandCard(id)
 
+
     def sosedje(self, x, y, r=1, explorer=False, additional_neighbours = None):
-        """ sosedje - vrne listo tuplejev v radiju
-         r rabi navigator, ki lahko premakne nekoga za 2"""
-        neighbours = [(0, -1), (-1, 0), (1, 0), (0, 1)]
-        if additional_neighbours:
-            neighbours = neighbours + additional_neighbours
-
-        lista = []
-        for dx, dy in neighbours:
-            # dx, dy = neighbour
-            if (x + dx, y + dy) in self.cards.keys() and self.cards[(x + dx, y + dy)]:
-                lista.append((x + dx, y + dy))
-        return lista
-
-    def _getXY(self, id):
-        for card in self.cards.keys():
-            # print(card)
-            if self.cards[card].id == id:
-                print("Nasel karto z id {}".format(id))
-                return(card)
-
-    def sosedjeR(self, x, y, r=1, explorer=False, additional_neighbours = None):
         """ sosedje - vrne listo tuplejev v radiju
          r rabi navigator, ki lahko premakne nekoga za 2"""
         neighbours = [(0, -1), (-1, 0), (1, 0), (0, 1)]
@@ -104,7 +86,7 @@ class Island:
             for land in lista:
                 x, y = land
                 # tmp_lista.append(self.sosedjeR(x, y))
-                tmp_lista = tmp_lista + self.sosedjeR(x, y)
+                tmp_lista = tmp_lista + self.sosedje(x, y)
         return tmp_lista
 
 
@@ -140,19 +122,28 @@ class Island:
 
 
     def izrisi(self):
-        print("{:6}".format(""), end="")
-        self.__narisi_karto__(1, 0)
+
+        print("{:12}".format(""), end="")
         self.__narisi_karto__(2, 0)
+        self.__narisi_karto__(3, 0)
+        print("")
+        print("{:6}".format(""), end="")
+        for x in range (1, 5):
+            self.__narisi_karto__(x, 1)
         print("")
 
-        for i in range(1, 3):
-            for j in range(0, 4):
-                self.__narisi_karto__(j, i)
+        for y in range(2, 4):
+            for x in range(0, 6):
+                self.__narisi_karto__(x, y)
             print("")
 
         print("{:6}".format(""), end="")
-        self.__narisi_karto__(1, 3)
-        self.__narisi_karto__(2, 3)
+        for x in range (1, 5):
+            self.__narisi_karto__(x, 4)
+        print("")
+        print("{:12}".format(""), end="")
+        self.__narisi_karto__(2, 5)
+        self.__narisi_karto__(3, 5)
         print("")
 
 
@@ -199,11 +190,15 @@ if __name__ == '__main__':
     print("Sosedje (1, 1)")
     print(island.sosedje(1, 1))
 
+    # za test dveh sosedov. Napaka je, ce je vmes potopljeno polje
     print("Sosedje za explorerja (1, 1)")
     print(island.sosedje(1, 1, additional_neighbours= [(-1, 1), (0, 2), (1, 1), (-2, 0), (2, 0), (-1, -1), (1, -1), (0, -2)]))
 
+    # test dveh sosedov. Upostevati bi moralo tudi potopljeno polje
     print("Sosedje za explorerja (1, 1) z radij 2")
-    print(island.sosedjeR(1, 1, r = 2))
+    print(island.sosedje(1, 1, r = 2))
+
+
 
     # for card in island.cards.values():
     #     print(card.id)
